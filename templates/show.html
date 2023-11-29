@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Products</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+
+<h1 class="logo me-auto"><a href="{% url 'index' %}">Beela Hospital</a></h1>
+
+<h1 class="text-center">Booked Patients</h1>
+<table class="table table-info ">
+    <thread class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Department</th>
+            <th>Doctors</th>
+            <th>Message</th>
+        </tr>
+    </thread>
+
+    <tbody>
+    {% for patient in patient %}
+        <tr>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.phone }}</td>
+            <td>{{ patient.date }}</td>
+            <td>{{ patient.department }}</td>
+            <td>{{ patient.doctor }}</td>
+            <td>{{ patient.message }}</td>
+
+            <td>
+                <a href="/edit/{{ patient.id }}" class="btn btn-warning">EDIT</a>
+                <a href="/delete/{{ patient.id }}" class="btn btn-danger">DELETE</a>
+                <a href="{% url 'pay' %}" class="btn btn-success">PAY</a>
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+<br>
+
+
+<center><a href="{% url 'appointments' %}" class="btn btn-primary">Add new patient</a></center>
+
+
+
+</body>
+</html>
