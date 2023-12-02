@@ -1,6 +1,7 @@
 import json
 
 import requests
+from django.contrib import messages
 from django.http import HttpResponse
 from requests.auth import HTTPBasicAuth
 
@@ -13,7 +14,7 @@ from PMSapp.models import Member, Patient, ImageModel
 
 
 from PMSapp.credentials import MpesaAccessToken, LipanaMpesaPpassword,MpesaC2bCredential
-from PMSapp.forms import PatientForm, ImageUploadForm, PaymentForm
+from PMSapp.forms import PatientForm, ImageUploadForm, PaymentForm, MemberForm
 
 
 
@@ -32,20 +33,24 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        member = Member(fname=request.POST['fname'],
-                        lname=request.POST['lname'],
-                        email=request.POST['email'],
-                        username=request.POST['username'],
-                        password=request.POST['password'],
-                        passwordconfirm=request.POST['passwordconfirm'])
+        form = MemberForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            password_confirm = form.cleaned_data['passwordconfirm']
 
+            if password == password_confirm:
+                member = form.save()
+                messages.success(request, 'Registration successful. You can now log in.')
+                return redirect('login')  # Redirect to your login page
+            else:
+                messages.error(request, 'Passwords do not match')
+        else:
+            messages.error(request, 'Invalid form submission. Please check your input.')
 
-
-        member.save()
-        return redirect('/')
     else:
-        return render(request,'registration.html')
+        form = MemberForm()
 
+    return render(request, 'registration.html', {'form': form})
 
 def home(request):
     return render(request,'home.html')
